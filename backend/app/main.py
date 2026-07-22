@@ -1,5 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+
+from app.db.session import engine
 
 app = FastAPI(
     title="智能健康饮食助手 API",
@@ -19,11 +23,23 @@ app.add_middleware(
 
 
 @app.get("/api/v1/health")
-def health_check():
+def health_check(response: Response):
+    database_status = "connected"
+    app_status = "healthy"
+
+    try:
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+    except SQLAlchemyError:
+        database_status = "unavailable"
+        app_status = "unhealthy"
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+
     return {
         "code": 0,
         "message": "ok",
         "data": {
-            "status": "healthy",
+            "status": app_status,
+            "database": database_status,
         },
     }

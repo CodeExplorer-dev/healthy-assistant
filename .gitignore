@@ -3,6 +3,7 @@
 venv/
 env/
 .env/
+.env
 
 # Python 缓存
 __pycache__/
