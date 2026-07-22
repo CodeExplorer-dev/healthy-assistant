@@ -22,6 +22,16 @@ class Settings(BaseSettings):
     mysql_host: str = Field(default="127.0.0.1", validation_alias="MYSQL_HOST")
     mysql_port: int = Field(default=3306, validation_alias="MYSQL_PORT")
 
+    jwt_secret: str = Field(validation_alias="JWT_SECRET")
+    jwt_algorithm: str = Field(
+        default="HS256",
+        validation_alias="JWT_ALGORITHM",
+    )
+    access_token_expire_minutes: int = Field(
+        default=30,
+        validation_alias="ACCESS_TOKEN_EXPIRE_MINUTES",
+    )
+
     @property
     def database_url(self) -> URL:
         return URL.create(
