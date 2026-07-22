@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.api.routes.auth import router as auth_router
+
 from app.db.session import engine
 
 app = FastAPI(
@@ -21,6 +23,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 注册认证路由。
+app.include_router(auth_router)
 
 @app.get("/api/v1/health")
 def health_check(response: Response):
